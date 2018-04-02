@@ -65,15 +65,15 @@ class Ball(pygame.sprite.Sprite):
 		'''
 		(dx,dy) = self.direction				# the x and y components of the direction
 		(odx,ody) = other_object.direction		# the x and y components of the other object's direction
-		(cx,cy) = self.rect.center
-		(ocx,ocy) = other_object.rect.center
-		radius = self.rect.width/2
-		oradius = other_object.rect.width/2
+		(cx,cy) = self.rect.center # center of collider
+		(ocx,ocy) = other_object.rect.center # center of  the object collider is colliding with
+		radius = self.rect.width/2 # radius of collider
+		oradius = other_object.rect.width/2 # radius of object collider is colliding with
 		#find the hypotenuse
-		distance = math.sqrt(abs(cx-ocx)**2 + abs(cy-ocy)**2)
-		if distance <= 0:
-			distance = 0.1
-		combined_distance = (radius+oradius)
+		distance = math.sqrt(abs(cx-ocx)**2 + abs(cy-ocy)**2) # pythagorean theorem, finds distance
+		if distance <= 0: # sees if objects are touching
+			distance = 0.1 # spreads objects apart ?
+		combined_distance = (radius+oradius) # sees distance between the 2 objects
 		if distance <= combined_distance:	#collision
 			normal = ((cx-ocx)/distance,(cy-ocy)/distance)	# a vector tangent to the plane of collision
 			velocity_delta = ((odx-dx),(ody-dy))	#the relative difference between the speed of the two objects
@@ -81,14 +81,14 @@ class Ball(pygame.sprite.Sprite):
 			(vdx,vdy) = velocity_delta
 			dot_product = nx*vdx + ny*vdy
 			if dot_product >= 0:	#check if the objects are moving toward each other
-				impulse_strength = dot_product * (self.mass / other_object.mass)
-				impulse = (ix,iy) = (impulse_strength * nx, impulse_strength * ny)
-				dx += ix * (other_object.mass/self.mass)
-				dy += iy * (other_object.mass/self.mass)
-				self.direction = (dx,dy)
-				odx -= ix * (self.mass/other_object.mass)
-				ody -= iy * (self.mass/other_object.mass)
-				other_object.direction = (odx,ody)
+				impulse_strength = dot_product * (self.mass / other_object.mass) # sees how "Strong" the collision is
+				impulse = (ix,iy) = (impulse_strength * nx, impulse_strength * ny) # gives number for force
+				dx += ix * (other_object.mass/self.mass) # applies force on object (x)
+				dy += iy * (other_object.mass/self.mass) # applies force on object (y)
+				self.direction = (dx,dy) # moves object
+				odx -= ix * (self.mass/other_object.mass) # applies force on object (x)
+				ody -= iy * (self.mass/other_object.mass) # applies force on object (y)
+				other_object.direction = (odx,ody) # moves object
 
 	def draw(self,screen):
 		self.image.blit(screen,(0,0),self.rect)
